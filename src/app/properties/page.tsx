@@ -9,7 +9,7 @@ interface Property {
 }
 
 export default async function PropertiesPage() {
-  const res = await fetch('https://script.google.com/macros/s/AKfycbwj_8LamPNoqU6cwChYBPQprr6mVMLPYqT3uGSVCXVvr665bcVk1PKADff2AHgJvXC3/exec');
+  const res = await fetch('https://script.google.com/macros/s/AKfycbxdpv5U2nJZY32xFR8mZinqLE9yTg_Cl6aUoN-cutenprdv1YTFO99OmyqvbG0OpQGv/exec');
   const data: Property[] = await res.json();
 
   return (
