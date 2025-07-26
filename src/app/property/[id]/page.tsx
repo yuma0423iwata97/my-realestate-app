@@ -1,7 +1,8 @@
-type Props = {
-  params: { id: string }
-}
-
-export default function PropertyDetail({ params }: Props) {
-  return <div className="p-4 text-xl">物件詳細: {params.id}</div>;
+/* app/property/[id]/page.tsx */
+export default function PropertyDetail({
+  params,
+}: {
+  params: { id: string };
+}) {
+  return <div>物件ID: {params.id}</div>;
 }
