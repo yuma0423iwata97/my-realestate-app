@@ -1,5 +1,7 @@
-type Props = {
-  params: Promise<{ id: string }>;
+interface Props {
+  params: Promise<{
+    id: string;
+  }>;
 }
 
 export default async function PropertyDetail({ params }: Props) {
