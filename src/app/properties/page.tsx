@@ -1,4 +1,3 @@
-/* app/properties/page.tsx */
 interface Property {
   ID: string;
   Title: string;
