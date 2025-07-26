@@ -8,8 +8,9 @@ interface Property {
   District: string;
 }
 
+export const dynamic = 'force-dynamic'; 
 export default async function PropertiesPage() {
-  const res = await fetch('https://script.google.com/macros/s/AKfycbxdpv5U2nJZY32xFR8mZinqLE9yTg_Cl6aUoN-cutenprdv1YTFO99OmyqvbG0OpQGv/exec');
+  const res = await fetch('https://script.google.com/macros/s/AKfycbxdpv5U2nJZY32xFR8mZinqLE9yTg_Cl6aUoN-cutenprdv1YTFO99OmyqvbG0OpQGv/exec',{ cache: 'no-store' } );
   const data: Property[] = await res.json();
 
   return (
