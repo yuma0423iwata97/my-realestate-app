@@ -10,7 +10,7 @@ type Property = {
 };
 
 export default async function PropertiesPage() {
-  const res = await fetch('https://script.google.com/macros/s/XXX/exec');
+  const res = await fetch('https://script.google.com/macros/s/AKfycbwj_8LamPNoqU6cwChYBPQprr6mVMLPYqT3uGSVCXVvr665bcVk1PKADff2AHgJvXC3/exec');
   const data: Property[] = await res.json();
 
   return (
