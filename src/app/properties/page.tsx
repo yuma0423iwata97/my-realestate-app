@@ -1,5 +1,5 @@
 /* app/properties/page.tsx */
-type Property = {
+interface Property {
   ID: string;
   Title: string;
   Price: string;
@@ -7,7 +7,7 @@ type Property = {
   Layout: string;
   Province: string;
   District: string;
-};
+}
 
 export default async function PropertiesPage() {
   const res = await fetch('https://script.google.com/macros/s/AKfycbwj_8LamPNoqU6cwChYBPQprr6mVMLPYqT3uGSVCXVvr665bcVk1PKADff2AHgJvXC3/exec');
