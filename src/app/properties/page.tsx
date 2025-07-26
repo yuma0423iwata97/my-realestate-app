@@ -1,6 +1,4 @@
-export default function PropertiesPage() {
-  return <div className="p-4 text-xl">物件一覧ページ</div>;
-}
+
 
 type Property = {
   ID: string;
