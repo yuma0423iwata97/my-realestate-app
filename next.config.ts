@@ -1,22 +1,17 @@
-// /next.config.ts
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
   images: {
-    /** ここで外部画像 URL をホワイトリスト登録する */
+    unoptimized: true, // 外部画像の最適化をスキップ（特に無料プランでの制限回避に有効）
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',   // ← ★ドメインだけ
-        pathname: '/**',                  //   すべてのパスを許可
+        hostname: '**', // すべての外部画像を許可（開発中は便利）
       },
-      // Google Photos なども使う場合は ↓ 追加
-      // {
-      //   protocol: 'https',
-      //   hostname: 'lh3.googleusercontent.com',
-      //   pathname: '/**',
-      // },
     ],
   },
+  // output: 'export', // ← これを削除またはコメントアウト
 };
 
-module.exports = nextConfig;
+export default nextConfig;
