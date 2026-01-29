@@ -18,6 +18,7 @@ async function getBlogPost(id: string): Promise<Blog | null> {
     const data = await client.get({
       endpoint: "blogs",
       contentId: id,
+      // next: { revalidate: 3600 } // MicroCMS SDKはデフォルトでキャッシュしないため、必要に応じて設定
     });
     return data;
   } catch (e) {
@@ -26,7 +27,7 @@ async function getBlogPost(id: string): Promise<Blog | null> {
   }
 }
 
-// 静的生成用
+// 静的生成用（任意：SSGにするなら必要）
 export async function generateStaticParams() {
   const { contents } = await client.getList<Blog>({ endpoint: "blogs" });
   return contents.map((post) => ({
@@ -43,21 +44,22 @@ export default async function BlogDetailPage({ params }: Props) {
 
   if (!post) notFound();
 
-  // ★修正箇所1: 本文が空でも落ちないように || "" を追加
-  const $ = cheerio.load(post.content || "", null, false);
-
+  // 目次(TOC)の生成ロジック
+  // 第3引数に false を指定して「断片（フラグメント）」として読み込ませる
+const $ = cheerio.load(post.content, null, false);
   const headings = $('h2, h3').toArray().map((data) => ({
     text: $(data).text(),
     id: $(data).attr('id') || `section-${Math.random().toString(36).substr(2, 9)}`,
     tag: data.tagName,
   }));
 
+  // 本文中のH2/H3にIDを付与
   $('h2, h3').each((i, el) => {
     if (!$(el).attr('id')) {
       $(el).attr('id', headings[i].id);
     }
   });
-  
+  // imgタグにクラスを追加（Tailwindでのスタイリングのため）
   $('img').addClass('w-full h-auto rounded-lg my-6 shadow-sm border border-gray-100');
   
   const contentHtml = $.html();
@@ -100,7 +102,6 @@ export default async function BlogDetailPage({ params }: Props) {
                   {post.category && (
                     <span className="bg-red-50 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-red-100">
                       <Folder size={12} />
-                      {/* 前回の修正箇所: .name を忘れずに */}
                       {post.category.name}
                     </span>
                   )}
@@ -141,6 +142,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
           {/* === 右カラム：サイドバー === */}
           <aside className="space-y-6">
+            {/* プロフィール */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <h3 className="font-bold text-gray-800 mb-4 pb-2 border-b">運営者：CityClubHouse</h3>
               <div className="flex items-center gap-4 mb-4">
@@ -156,6 +158,7 @@ export default async function BlogDetailPage({ params }: Props) {
               </a>
             </div>
 
+            {/* 物件検索バナー */}
             <div className="bg-[#1f2937] p-6 rounded-xl text-center text-white shadow-lg relative overflow-hidden group">
               <div className="relative z-10">
                 <p className="font-bold text-lg mb-2">バンコクの物件を探す</p>
@@ -180,10 +183,8 @@ export async function generateMetadata({ params }: Props) {
   
   if(!post) return { title: '記事が見つかりません' };
   
-  // ★修正箇所2: 本文が空でも落ちないように || "" を追加
-  const description = post.description 
-    ? post.description 
-    : (post.content || "").replace(/<[^>]*>/g, '').substring(0, 100) + '...';
+  // HTMLタグを除去して説明文を作る
+  const description = post.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...';
 
   return {
     title: `${post.title} | CityClubHouse ブログ`,
