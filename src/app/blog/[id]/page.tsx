@@ -102,7 +102,7 @@ const $ = cheerio.load(post.content, null, false);
                   {post.category && (
                     <span className="bg-red-50 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-red-100">
                       <Folder size={12} />
-                      {post.category}
+                      {post.category.name}
                     </span>
                   )}
                   <div className="flex items-center text-gray-500 text-xs font-medium">
