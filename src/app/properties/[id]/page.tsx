@@ -1,10 +1,11 @@
 import React from 'react';
+import type { Metadata, ResolvingMetadata } from 'next'; // SEO用の型定義を追加
 import ImageCarousel from '@/components/ImageCarousel';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import FavoriteButton from '@/components/FavoriteButton';
 import HistoryRecorder from '@/components/HistoryRecorder';
-import { getImagesByFolder } from '@/lib/cloudinary'; // ★ 追加: Cloudinary関数
+import { getImagesByFolder } from '@/lib/cloudinary';
 import { 
   MapPin, 
   Train, 
@@ -14,11 +15,11 @@ import {
   Calendar, 
   MessageCircle, 
   ArrowLeft,
-  Share2,
   Mail,
   Info
 } from 'lucide-react';
 
+// --- 型定義 ---
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -51,58 +52,123 @@ interface ApiResponse {
 }
 
 const API = process.env.SHEET_API_URL as string;
-export const dynamic = 'force-dynamic';
 
-export default async function PropertyDetail({ params }: Props) {
-  const { id: idStr } = await params;
-  const id = Number(idStr);
-  if (Number.isNaN(id)) notFound();
+// ★重要: SEOと速度のためにISR(1時間キャッシュ)を採用
+// force-dynamicだと毎回遅いAPIを見に行ってしまうため、revalidateを設定推奨
+export const revalidate = 3600; 
 
-  let property: Property | null = null;
+// --- 共通データ取得関数 ---
+// メタデータとページ本体の両方で使うため、ロジックを分離
+async function getPropertyData(id: number): Promise<Property | null> {
+  if (Number.isNaN(id)) return null;
 
   try {
     // 1. スプレッドシートAPIから基本情報を取得
-    const res = await fetch(`${API}?id=${id}`, { cache: 'no-store' });
+    // fetchに revalidate を設定してAPI負荷を軽減
+    const res = await fetch(`${API}?id=${id}`, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error('API Error');
     const { data }: ApiResponse = await res.json();
-    property = data[0] || null;
+    let property = data[0] || null;
 
-    // 2. Cloudinaryから画像を取得 (並行処理も可能だがシンプルに直列で記述)
-    // フォルダ構成は "properties/{ID}" と仮定しています
+    // 2. Cloudinaryから画像を取得
     if (property) {
       const folderPath = `properties/${id}`;
+      // Cloudinaryの取得もキャッシュしたい場合はここで制御可能ですが、
+      // 基本はNext.jsが同じリクエストサイクル内なら重複排除してくれます
       const cloudImages = await getImagesByFolder(folderPath);
       
-      // Cloudinaryに画像があればそれを優先使用、なければスプレッドシートの画像、それもなければ空
       if (cloudImages.length > 0) {
         property.Images = cloudImages;
       }
+       // コンテキスト保存用にThumbnailを補完
+      if (!property.Thumbnail && property.Images?.length > 0) {
+        property.Thumbnail = property.Images[0];
+      }
     }
+    return property;
 
   } catch (e) {
-    console.error(e);
-    // エラーでもNotFoundにはせず、データが取れている部分だけで表示を試みるなどのハンドリングも可
-    if (!property) notFound();
+    console.error("Data Fetch Error:", e);
+    return null;
+  }
+}
+
+// --- ★ SEO実装: 動的メタデータ生成 ---
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { id: idStr } = await params;
+  const id = Number(idStr);
+  
+  // データを取得
+  const property = await getPropertyData(id);
+
+  // データがない場合のフォールバック
+  if (!property) {
+    return {
+      title: '物件が見つかりませんでした | CityClubHouse',
+      description: 'お探しの物件情報は削除されたか、URLが間違っている可能性があります。',
+    };
   }
 
-  if (!property) notFound();
-  const p = property;
+  // SEO用テキスト構築
+  // タイトル：指名検索(英語)とエリア検索(日本語)の両取り
+  const title = `${property.Title} (${property.District}) の賃貸情報・家賃 | CityClubHouse`;
   
-  // コンテキスト保存用にThumbnailを補完 (Imagesの1枚目を使用)
-  if (!p.Thumbnail && p.Images?.length > 0) {
-    p.Thumbnail = p.Images[0];
-  }
+  // ディスクリプション：クリック率を上げるキーワード（内見、写真、家賃）を盛り込む
+  const priceText = property.Price ? `${property.Price.toLocaleString()} THB` : 'お問い合わせ';
+  const description = `バンコク・${property.District}エリアの人気物件「${property.Title}」の詳細ページ。家賃：${priceText}〜、間取り：${property.Layout || '確認中'}。${property.Station1 ? `${property.Station1}駅近く。` : ''}写真や周辺環境も掲載中。内見予約や空室確認はLINEで即レス対応のCityClubHouseへ。`;
+
+  // OGP画像（LINEでシェアした時に出る画像）
+  const ogImage = property.Images?.[0] || property.Thumbnail || '/og-default.png'; // デフォルト画像を用意しておくとベスト
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      url: `https://cityclubhouse.net/properties/${id}`, // ★独自ドメイン取得後に書き換え推奨
+      siteName: 'CityClubHouse - バンコクの賃貸・不動産',
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: property.Title,
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      images: [ogImage],
+    },
+  };
+}
+
+// --- メインコンポーネント ---
+export default async function PropertyDetail({ params }: Props) {
+  const { id: idStr } = await params;
+  const id = Number(idStr);
+
+  // 共通関数でデータを取得（Request Memoizationにより2回目のFetch負荷はかかりません）
+  const p = await getPropertyData(id);
+
+  if (!p) notFound();
 
   const formattedPrice = p.Price ? p.Price.toLocaleString() : "お問い合わせ";
   const mapQuery = encodeURIComponent(`${p.Title} ${p.District} Bangkok`);
+  // Google Map URLの修正 (元のコードで 0{mapQuery} となっていた部分を修正)
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
-      {/* 閲覧履歴を記録 */}
       <HistoryRecorder property={p} />
 
-      {/* ヘッダーナビ */}
       <div className="bg-white border-b border-gray-200 sticky top-16 z-30 shadow-sm">
         <div className="container-base py-3 flex items-center justify-between">
           <Link href="/properties" className="text-sm font-bold text-gray-500 hover:text-red-600 flex items-center gap-1 transition-colors">
@@ -216,7 +282,6 @@ export default async function PropertyDetail({ params }: Props) {
   );
 }
 
-// 修正箇所: icon の型を React.ElementType に変更
 function SpecItem({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: string | number }) {
   return (
     <div className="bg-gray-50 rounded-xl p-3 flex flex-col items-center justify-center text-center border border-gray-100">

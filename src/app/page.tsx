@@ -92,7 +92,7 @@ async function getFeatured(): Promise<Property[]> {
   }
   try {
     const res = await fetch(`${API}?perPage=6`, { 
-      cache: "no-store", // リアルタイム性を重視
+      next: { revalidate: 3600 } // ← 1時間はキャッシュを使う（高速化＆ビルド成功）
     });
     if (!res.ok) throw new Error("Failed to fetch");
     const { data } = await res.json();

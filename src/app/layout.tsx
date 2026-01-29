@@ -21,6 +21,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CITY CLUB HOUSE | バンコクのコンドミニアム・不動産探し",
   description: "バンコクの日本人向け賃貸物件・コンドミニアム検索サイト。手数料無料、日本人スタッフ対応。",
+  
+  verification: {
+    google: "4DkqyLV6x_-bAQ5zU9a5limAYlYfI3DibX_K5cHBAls",
+  },
 };
 
 export default function RootLayout({
