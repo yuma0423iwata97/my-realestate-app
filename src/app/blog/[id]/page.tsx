@@ -46,7 +46,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
   // 目次(TOC)の生成ロジック
   // 第3引数に false を指定して「断片（フラグメント）」として読み込ませる
-const $ = cheerio.load(post.content, null, false);
+const $ = cheerio.load(post.content || "", null, false);
   const headings = $('h2, h3').toArray().map((data) => ({
     text: $(data).text(),
     id: $(data).attr('id') || `section-${Math.random().toString(36).substr(2, 9)}`,
@@ -184,7 +184,9 @@ export async function generateMetadata({ params }: Props) {
   if(!post) return { title: '記事が見つかりません' };
   
   // HTMLタグを除去して説明文を作る
-  const description = post.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...';
+  const description = post.description 
+    ? post.description 
+    : (post.content || "").replace(/<[^>]*>/g, '').substring(0, 100) + '...';
 
   return {
     title: `${post.title} | CityClubHouse ブログ`,
