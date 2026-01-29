@@ -6,7 +6,6 @@ import Image from 'next/image'; // 追加
 import { History, Menu, Heart } from "lucide-react";
 import Providers from "@/components/Providers";
 import FavoriteCountBadge from "@/components/FavoriteCountBadge";
-import UserMenu from "@/components/UserMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
