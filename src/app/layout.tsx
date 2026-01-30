@@ -6,6 +6,7 @@ import Image from 'next/image'; // 追加
 import { History, Menu, Heart } from "lucide-react";
 import Providers from "@/components/Providers";
 import FavoriteCountBadge from "@/components/FavoriteCountBadge";
+import JsonLd from '@/components/JsonLd';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-screen flex flex-col font-sans">
+      <JsonLd />
         <Providers>
           <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             <div className="container-base h-16 flex items-center justify-between">
