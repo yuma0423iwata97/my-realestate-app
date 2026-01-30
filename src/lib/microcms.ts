@@ -1,45 +1,35 @@
 import { createClient } from "microcms-js-sdk";
+import type { MicroCMSImage, MicroCMSDate } from "microcms-js-sdk";
 
-// 環境変数が読み込めていない場合の安全策
-const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || "";
-const apiKey = process.env.MICROCMS_API_KEY || "";
-
-if (!serviceDomain || !apiKey) {
-  console.warn("MicroCMSの環境変数が設定されていません");
+// 環境変数のチェック
+if (!process.env.MICROCMS_SERVICE_DOMAIN) {
+  throw new Error("MICROCMS_SERVICE_DOMAIN is required");
 }
 
+if (!process.env.MICROCMS_API_KEY) {
+  throw new Error("MICROCMS_API_KEY is required");
+}
+
+// クライアントの初期化
 export const client = createClient({
-  serviceDomain,
-  apiKey,
+  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
+  apiKey: process.env.MICROCMS_API_KEY,
 });
 
-// 型定義
+// --- 型定義 ---
+
+// カテゴリー
+export type Category = {
+  id: string;
+  name: string;
+} & MicroCMSDate;
+
+// ブログ記事
 export type Blog = {
   id: string;
   title: string;
   content: string;
-  eyecatch?: {
-    url: string;
-    height: number;
-    width: number;
-  };
-  category?: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    revisedAt: string;
-    name: string;
-  };
-  // ★ここを追加：メタディスクリプション用のフィールド定義
-  description?: string;
-  publishedAt: string;
-  updatedAt: string;
-};
-
-export type BlogResponse = {
-  totalCount: number;
-  offset: number;
-  limit: number;
-  contents: Blog[];
-};
+  eyecatch?: MicroCMSImage;
+  category?: Category;
+  description?: string; // 記事の概要文（メタデータ用）
+} & MicroCMSDate;
