@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from "next/image";
+import Contents from "@/components/Contents";
 import { 
   ShieldCheck, 
   MessageCircle, 

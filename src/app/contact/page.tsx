@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Contents from "@/components/Contents";
 import { 
   Mail, 
   MessageCircle, 
