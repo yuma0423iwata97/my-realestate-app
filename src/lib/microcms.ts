@@ -29,8 +29,10 @@ export type Blog = {
     updatedAt: string;
     publishedAt: string;
     revisedAt: string;
-    name: string; // MicroCMS側で選択肢の値をどう設定したかによりますが、基本はこれ
+    name: string;
   };
+  // ★ここを追加：メタディスクリプション用のフィールド定義
+  description?: string;
   publishedAt: string;
   updatedAt: string;
 };
