@@ -141,7 +141,11 @@ const areas: Record<string, Area[]> = {
 export default function AreaGuidePage() {
   return (
     <div className="bg-gray-50 pb-20 font-sans">
-      
+      <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
+        <div className="container-base py-3">
+          <Contents />
+        </div>
+      </section>
       {/* ヒーローセクション */}
       <section className="relative bg-white pt-12 pb-16 border-b border-gray-100">
         <div className="container-base text-center">

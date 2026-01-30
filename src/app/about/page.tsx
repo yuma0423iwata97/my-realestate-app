@@ -25,7 +25,11 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="bg-white pb-20 font-sans text-gray-800">
-      
+      <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
+        <div className="container-base py-3">
+          <Contents />
+        </div>
+      </section>
       {/* ----------------------------------------------------------------------
           A. ヒーローセクション
           目的：最初の10秒で「ここなら安心だ」と感じさせる

@@ -72,7 +72,11 @@ export default function ContactPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20 font-sans text-gray-800">
-      
+      <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
+        <div className="container-base py-3">
+          <Contents />
+        </div>
+      </section>
       {/* ----------------------------------------------------------------------
           ヘッダーセクション
       ---------------------------------------------------------------------- */}

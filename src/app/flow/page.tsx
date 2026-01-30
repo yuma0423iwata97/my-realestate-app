@@ -23,7 +23,11 @@ export const metadata = {
 export default function GuidePage() {
   return (
     <div className="bg-gray-50 pb-20">
-      
+      <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
+        <div className="container-base py-3">
+          <Contents />
+        </div>
+      </section>
       {/* ① ヒーローセクション */}
       <section className="relative bg-white pt-16 pb-20 border-b border-gray-100 overflow-hidden">
         <div className="container-base relative z-10 text-center">
