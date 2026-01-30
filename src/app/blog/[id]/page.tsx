@@ -7,12 +7,10 @@ import * as cheerio from 'cheerio';
 import { Clock, ChevronRight, Folder } from 'lucide-react';
 import { client, Blog } from '@/lib/microcms';
 
-// --- 型定義 ---
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-// --- データ取得 ---
 async function getBlogPost(id: string): Promise<Blog | null> {
   try {
     const data = await client.get({
@@ -26,7 +24,6 @@ async function getBlogPost(id: string): Promise<Blog | null> {
   }
 }
 
-// 静的生成用
 export async function generateStaticParams() {
   const { contents } = await client.getList<Blog>({ endpoint: "blogs" });
   return contents.map((post) => ({
@@ -34,16 +31,14 @@ export async function generateStaticParams() {
   }));
 }
 
-export const revalidate = 3600; // 1時間ごとに再生成
+export const revalidate = 3600;
 
-// --- 記事詳細ページ ---
 export default async function BlogDetailPage({ params }: Props) {
   const { id } = await params;
   const post = await getBlogPost(id);
 
   if (!post) notFound();
 
-  // ★修正箇所1: 本文が空でも落ちないように || "" を追加
   const $ = cheerio.load(post.content || "", null, false);
 
   const headings = $('h2, h3').toArray().map((data) => ({
@@ -66,7 +61,6 @@ export default async function BlogDetailPage({ params }: Props) {
     <div className="bg-[#f9fafb] min-h-screen py-8 md:py-12 font-sans">
       <div className="container-base">
         
-        {/* パンくずリスト */}
         <nav className="flex items-center text-sm text-gray-500 mb-6 overflow-x-auto whitespace-nowrap">
           <Link href="/" className="hover:text-red-600 transition-colors">TOP</Link>
           <ChevronRight size={14} className="mx-2 shrink-0" />
@@ -75,12 +69,9 @@ export default async function BlogDetailPage({ params }: Props) {
           <span className="font-semibold text-gray-800 truncate">{post.title}</span>
         </nav>
 
-        {/* 2カラムレイアウト */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
           
-          {/* === 左カラム：記事本文 === */}
           <main className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            {/* アイキャッチ画像 */}
             {post.eyecatch && (
               <div className="w-full aspect-video relative">
                 <Image
@@ -94,19 +85,18 @@ export default async function BlogDetailPage({ params }: Props) {
             )}
 
             <div className="p-6 md:p-10">
-              {/* ヘッダー情報 */}
               <div className="mb-8 border-b border-gray-100 pb-8">
                 <div className="flex flex-wrap gap-3 mb-4">
                   {post.category && (
                     <span className="bg-red-50 text-red-600 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 border border-red-100">
                       <Folder size={12} />
-                      {/* 前回の修正箇所: .name を忘れずに */}
                       {post.category.name}
                     </span>
                   )}
                   <div className="flex items-center text-gray-500 text-xs font-medium">
                     <Clock size={14} className="mr-1" />
-                    {new Date(post.publishedAt).toLocaleDateString('ja-JP')}
+                    {/* ★修正: publishedAt がある場合のみ日付を表示 */}
+                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('ja-JP') : '-'}
                   </div>
                 </div>
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">
@@ -114,7 +104,6 @@ export default async function BlogDetailPage({ params }: Props) {
                 </h1>
               </div>
 
-              {/* 目次ボックス */}
               {headings.length > 0 && (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-10">
                   <p className="font-bold text-gray-800 mb-4 text-center">目次</p>
@@ -131,15 +120,12 @@ export default async function BlogDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* 記事本文 */}
               <div className="blog-content prose prose-lg prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:text-blue-500 max-w-none">
                 {parse(contentHtml)}
               </div>
             </div>
           </main>
 
-
-          {/* === 右カラム：サイドバー === */}
           <aside className="space-y-6">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <h3 className="font-bold text-gray-800 mb-4 pb-2 border-b">運営者：CityClubHouse</h3>
@@ -173,14 +159,12 @@ export default async function BlogDetailPage({ params }: Props) {
   );
 }
 
-// SEO用メタデータ生成
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const post = await getBlogPost(id);
   
   if(!post) return { title: '記事が見つかりません' };
   
-  // ★修正箇所2: 本文が空でも落ちないように || "" を追加
   const description = post.description 
     ? post.description 
     : (post.content || "").replace(/<[^>]*>/g, '').substring(0, 100) + '...';
