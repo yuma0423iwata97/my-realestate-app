@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import FavoriteButton from "@/components/FavoriteButton"; // ★ 追加
-import { BedDouble, Bath, Ruler, Building2, Calendar } from "lucide-react";
 import { 
   MapPin, 
+  BedDouble,
+  Bath,
   Train, 
   Home, 
   Ruler, 
