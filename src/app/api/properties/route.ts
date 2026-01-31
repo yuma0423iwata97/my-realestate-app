@@ -11,7 +11,8 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     // 必要なら送るパラメータだけ拾う（GASがbounds非対応なら一旦送らない）
     const q = new URLSearchParams();
-    for (const k of ["north","south","east","west","area","station","page","perPage","q","sort"]) {
+    // ★ bedroom, bathroom を許可リストに追加
+    for (const k of ["north","south","east","west","area","station","page","perPage","q","sort","bedroom","bathroom"]) {
       const v = searchParams.getAll(k);
       v.forEach((vv) => q.append(k, vv));
     }
@@ -32,7 +33,6 @@ export async function GET(req: Request) {
     const normalized = Array.isArray(json) ? { data: json } : json;
     return NextResponse.json(normalized, { status: 200 });
   } catch (e: unknown) {
-    // any を unknown に変更し、型をチェックしてメッセージを取得
     const errorMessage = e instanceof Error ? e.message : String(e);
     console.error("[properties] route exception", errorMessage);
     return NextResponse.json({ data: [], error: errorMessage }, { status: 200 });
