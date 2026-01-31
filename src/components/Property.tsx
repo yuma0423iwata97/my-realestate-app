@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import FavoriteButton from "@/components/FavoriteButton"; // ★ 追加
+import FavoriteButton from "@/components/FavoriteButton"; 
 import { 
   MapPin, 
   BedDouble,

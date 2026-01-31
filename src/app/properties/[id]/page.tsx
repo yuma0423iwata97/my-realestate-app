@@ -8,6 +8,8 @@ import HistoryRecorder from '@/components/HistoryRecorder';
 import { getImagesByFolder } from '@/lib/cloudinary';
 import { 
   MapPin, 
+  Bath,
+  BedDouble,
   Train, 
   Home, 
   Ruler, 
@@ -238,7 +240,7 @@ export default async function PropertyDetail({ params }: Props) {
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <SpecItem icon={Ruler} label="広さ" value={p.Size ? `${p.Size} ㎡` : "-"} />
-                <SpecItem icon={Home} label="ベッドルーム" value={p.Bedroom ? `${p.Bedroom}` : "-"} />
+                <SpecItem icon={BedDouble} label="ベッドルーム" value={p.Bedroom ? `${p.Bedroom}` : "-"} />
                 <SpecItem icon={Bath} label="バスルーム" value={p.bathroom ? `${p.Bathroom}` : "-"} />
                 <SpecItem icon={Building2} label="階数" value={p.Floor ? `${p.Floor}階` : "-"} />
                 <SpecItem icon={Calendar} label="築年" value={p.Year ? `${p.Year}年` : "-"} />
