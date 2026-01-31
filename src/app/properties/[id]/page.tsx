@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next'; // SEO用の型定義を追加
 import ImageCarousel from '@/components/ImageCarousel';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -16,10 +16,10 @@ import {
   MessageCircle, 
   ArrowLeft,
   Mail,
-  Info,
-  Bath // 追加
+  Info
 } from 'lucide-react';
 
+// --- 型定義 ---
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -38,14 +38,14 @@ interface Property {
   Price?: number;
   Layout?: string;
   Size?: number;
-  Floor?: string; // 柔軟に対応
+  Floor?: string;
   Year?: number;
   Month?: number;
   Images: string[];
   Thumbnail?: string; 
   Features?: string[]; 
-  Bedroom?: number;  // ★追加
-  Bathroom?: number; // ★追加
+  Bedroom?: number;
+  Bathroom?: number;
 }
 
 interface ApiResponse {
@@ -54,24 +54,35 @@ interface ApiResponse {
 }
 
 const API = process.env.SHEET_API_URL as string;
+
+// ★重要: SEOと速度のためにISR(1時間キャッシュ)を採用
+// force-dynamicだと毎回遅いAPIを見に行ってしまうため、revalidateを設定推奨
 export const revalidate = 3600; 
 
+// --- 共通データ取得関数 ---
+// メタデータとページ本体の両方で使うため、ロジックを分離
 async function getPropertyData(id: number): Promise<Property | null> {
   if (Number.isNaN(id)) return null;
 
   try {
+    // 1. スプレッドシートAPIから基本情報を取得
+    // fetchに revalidate を設定してAPI負荷を軽減
     const res = await fetch(`${API}?id=${id}`, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error('API Error');
     const { data }: ApiResponse = await res.json();
     let property = data[0] || null;
 
+    // 2. Cloudinaryから画像を取得
     if (property) {
       const folderPath = `properties/${id}`;
+      // Cloudinaryの取得もキャッシュしたい場合はここで制御可能ですが、
+      // 基本はNext.jsが同じリクエストサイクル内なら重複排除してくれます
       const cloudImages = await getImagesByFolder(folderPath);
       
       if (cloudImages.length > 0) {
         property.Images = cloudImages;
       }
+       // コンテキスト保存用にThumbnailを補完
       if (!property.Thumbnail && property.Images?.length > 0) {
         property.Thumbnail = property.Images[0];
       }
@@ -84,14 +95,18 @@ async function getPropertyData(id: number): Promise<Property | null> {
   }
 }
 
+// --- ★ SEO実装: 動的メタデータ生成 ---
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id: idStr } = await params;
   const id = Number(idStr);
+  
+  // データを取得
   const property = await getPropertyData(id);
 
+  // データがない場合のフォールバック
   if (!property) {
     return {
       title: '物件が見つかりませんでした | CityClubHouse',
@@ -99,17 +114,16 @@ export async function generateMetadata(
     };
   }
 
+  // SEO用テキスト構築
+  // タイトル：指名検索(英語)とエリア検索(日本語)の両取り
   const title = `${property.Title} (${property.District}) の賃貸情報・家賃 | CityClubHouse`;
-  const priceText = property.Price ? `${property.Price.toLocaleString()} THB` : 'お問い合わせ';
   
-  // ★詳細文にもBedroom/Bathroomを反映
-  const layoutText = property.Bedroom !== undefined 
-    ? `${property.Bedroom} Bed / ${property.Bathroom} Bath` 
-    : (property.Layout || '確認中');
+  // ディスクリプション：クリック率を上げるキーワード（内見、写真、家賃）を盛り込む
+  const priceText = property.Price ? `${property.Price.toLocaleString()} THB` : 'お問い合わせ';
+  const description = `バンコク・${property.District}エリアの人気物件「${property.Title}」の詳細ページ。家賃：${priceText}〜、間取り：${property.Layout || '確認中'}。${property.Station1 ? `${property.Station1}駅近く。` : ''}写真や周辺環境も掲載中。内見予約や空室確認はLINEで即レス対応のCityClubHouseへ。`;
 
-  const description = `バンコク・${property.District}エリアの人気物件「${property.Title}」の詳細ページ。家賃：${priceText}〜、間取り：${layoutText}。${property.Station1 ? `${property.Station1}駅近く。` : ''}写真や周辺環境も掲載中。内見予約や空室確認はLINEで即レス対応のCityClubHouseへ。`;
-
-  const ogImage = property.Images?.[0] || property.Thumbnail || '/og-default.png';
+  // OGP画像（LINEでシェアした時に出る画像）
+  const ogImage = property.Images?.[0] || property.Thumbnail || '/og-default.png'; // デフォルト画像を用意しておくとベスト
 
   return {
     title: title,
@@ -117,7 +131,7 @@ export async function generateMetadata(
     openGraph: {
       title: title,
       description: description,
-      url: `https://cityclubhouse.net/properties/${id}`,
+      url: `https://cityclubhouse.net/properties/${id}`, // ★独自ドメイン取得後に書き換え推奨
       siteName: 'CityClubHouse - バンコクの賃貸・不動産',
       images: [
         {
@@ -138,20 +152,20 @@ export async function generateMetadata(
   };
 }
 
+// --- メインコンポーネント ---
 export default async function PropertyDetail({ params }: Props) {
   const { id: idStr } = await params;
   const id = Number(idStr);
+
+  // 共通関数でデータを取得（Request Memoizationにより2回目のFetch負荷はかかりません）
   const p = await getPropertyData(id);
 
   if (!p) notFound();
 
   const formattedPrice = p.Price ? p.Price.toLocaleString() : "お問い合わせ";
   const mapQuery = encodeURIComponent(`${p.Title} ${p.District} Bangkok`);
+  // Google Map URLの修正 (元のコードで 0{mapQuery} となっていた部分を修正)
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
-
-  // ★ Bedroom/Bathroom 表示ロジック
-  const bedroomDisplay = p.Bedroom !== undefined ? `${p.Bedroom} Bed` : (p.Layout || "-");
-  const bathroomDisplay = p.Bathroom !== undefined ? `${p.Bathroom} Bath` : "-";
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
@@ -173,6 +187,7 @@ export default async function PropertyDetail({ params }: Props) {
       </div>
 
       <div className="container-base py-8">
+        {/* タイトルエリア */}
         <div className="mb-6">
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className={`px-2.5 py-0.5 rounded text-xs font-bold text-white ${p.Type === '売買' ? 'bg-blue-600' : 'bg-red-600'}`}>
@@ -198,8 +213,12 @@ export default async function PropertyDetail({ params }: Props) {
           </div>
         </div>
 
+        {/* 2カラムレイアウト */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
+          
+          {/* 左カラム */}
           <div className="space-y-8 min-w-0">
+            {/* 画像カルーセル */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
               {p.Images?.length > 0 ? (
                 <ImageCarousel images={p.Images} alt={p.Title} className="w-full aspect-[4/3] md:aspect-[16/9] object-cover" />
@@ -212,16 +231,17 @@ export default async function PropertyDetail({ params }: Props) {
               )}
             </div>
 
+            {/* スペック */}
             <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Info size={20} className="text-red-600" /> 物件概要
               </h2>
-              {/* ★ ベッド・バスルームを分けて表示 */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <SpecItem icon={Home} label="ベッドルーム" value={bedroomDisplay} />
-                <SpecItem icon={Bath} label="バスルーム" value={bathroomDisplay} />
                 <SpecItem icon={Ruler} label="広さ" value={p.Size ? `${p.Size} ㎡` : "-"} />
+                <SpecItem icon={Home} label="ベッドルーム" value={p.Bedroom ? `${p.Bedroom}` : "-"} />
+                <SpecItem icon={Bath} label="バスルーム" value={p.bathroom ? `${p.Bathroom}` : "-"} />
                 <SpecItem icon={Building2} label="階数" value={p.Floor ? `${p.Floor}階` : "-"} />
+                <SpecItem icon={Calendar} label="築年" value={p.Year ? `${p.Year}年` : "-"} />
               </div>
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
@@ -234,6 +254,7 @@ export default async function PropertyDetail({ params }: Props) {
             </section>
           </div>
 
+          {/* 右カラム（追従） */}
           <div className="lg:block">
             <div className="sticky top-28 space-y-6">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-red-100 relative overflow-hidden">
