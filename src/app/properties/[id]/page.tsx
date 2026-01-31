@@ -38,7 +38,7 @@ interface Property {
   Price?: number;
   Layout?: string;
   Size?: number;
-  Floor?: string | number; // 柔軟に対応
+  Floor?: string; // 柔軟に対応
   Year?: number;
   Month?: number;
   Images: string[];
