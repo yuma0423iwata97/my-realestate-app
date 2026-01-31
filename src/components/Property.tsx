@@ -84,7 +84,7 @@ export default function PropertyCard({
   const badgeColor = isSale ? "bg-blue-600" : "bg-red-600";
 
   return (
-    <article className={["group relative flex flex-col md:flex-row bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1", className ?? ""].join(" ")}>
+    <article className={["group relative flex flex-col lg:flex-row bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1", className ?? ""].join(" ")}>
       <div className="relative w-full md:w-[320px] lg:w-[360px] aspect-[4/3] md:aspect-auto shrink-0 overflow-hidden bg-gray-100">
         <Link href={`/properties/${p.ID}`} className="block w-full h-full">
           <Image
@@ -121,7 +121,7 @@ export default function PropertyCard({
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-3 gap-x-2 my-4 bg-gray-50 rounded-xl p-3 border border-gray-100">
+          <div className="grid grid-cols-5 gap-y-3 gap-x-2 my-4 bg-gray-50 rounded-xl p-3 border border-gray-100">
   {/* Bedroom */}
   <div className="flex flex-col">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
@@ -139,7 +139,7 @@ export default function PropertyCard({
   </div>
 
   {/* Size */}
-  <div className="flex flex-col border-l-0 sm:border-l border-gray-200 pl-0 sm:pl-3">
+  <div className="flex flex-col border-l border-gray-200 pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
       <Ruler size={10} /> 広さ
     </span>
@@ -159,7 +159,7 @@ export default function PropertyCard({
   </div>
 
   {/* Year */}
-  <div className="flex flex-col border-l-0 lg:border-l border-gray-200 pl-0 lg:pl-3">
+  <div className="flex flex-col border-l border-gray-200 pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
       <Calendar size={10} /> 築年
     </span>

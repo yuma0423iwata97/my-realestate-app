@@ -238,7 +238,7 @@ export default async function PropertyDetail({ params }: Props) {
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <Info size={20} className="text-red-600" /> 物件概要
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-5 gap-4">
                 <SpecItem icon={Ruler} label="広さ" value={p.Size ? `${p.Size} ㎡` : "-"} />
                 <SpecItem icon={BedDouble} label="ベッドルーム" value={p.Bedroom ? `${p.Bedroom}` : "-"} />
                 <SpecItem icon={Bath} label="バスルーム" value={p.Bathroom ? `${p.Bathroom}` : "-"} />
