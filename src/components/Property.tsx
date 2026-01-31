@@ -85,7 +85,7 @@ export default function PropertyCard({
 
   return (
     <article className={["group relative flex flex-col lg:flex-row bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1", className ?? ""].join(" ")}>
-      <div className="relative w-full md:w-[320px] lg:w-[360px] aspect-[4/3] md:aspect-auto shrink-0 overflow-hidden bg-gray-100">
+      <div className="relative w-full lg:w-[360px] aspect-[4/3] lg:aspect-auto shrink-0 overflow-hidden bg-gray-100">
         <Link href={`/properties/${p.ID}`} className="block w-full h-full">
           <Image
             src={p.Thumbnail || "/placeholder.jpg"}
@@ -182,7 +182,7 @@ export default function PropertyCard({
           </div>
         </div>
 
-        <div className="flex items-end justify-between border-t border-dashed border-gray-200 pt-3 md:border-none md:pt-0">
+        <div className="flex items-end justify-between border-t border-dashed border-gray-200 pt-3 lg:border-none lg:pt-0">
            <div>
               <span className="text-xs font-bold text-gray-500 block">家賃 / 月</span>
               <span className="text-2xl md:text-3xl font-extrabold text-red-600 tracking-tight">
@@ -198,8 +198,8 @@ export default function PropertyCard({
         </div>
       </div>
 
-      <div className="p-4 md:w-64 bg-gray-50 border-t md:border-t-0 md:border-l border-gray-100 flex flex-col justify-center gap-3">
-         <div className="hidden md:flex items-center gap-2 mb-2 pb-3 border-b border-gray-200">
+      <div className="p-4 lg:w-64 bg-gray-50 border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col justify-center gap-3">
+         <div className="hidden lg:flex items-center gap-2 mb-2 pb-3 border-b border-gray-200">
             <div className="w-8 h-8 rounded bg-white border border-gray-200 p-0.5 overflow-hidden shrink-0">
                <Image src="/cch-logo.JPEG" alt="CCH" width={32} height={32} className="object-cover w-full h-full" unoptimized />
             </div>
@@ -216,7 +216,7 @@ export default function PropertyCard({
            >
               <MessageCircle size={18} /> LINEで問い合わせ
            </a>
-         <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
+         <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
             {actions.map((label, i) => (
                <Link 
                    key={i} 
