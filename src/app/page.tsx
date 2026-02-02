@@ -162,37 +162,38 @@ export default function Home() {
   return (
     <div className="pb-20">
       {/* Hero Section: ファーストビュー */}
-      <section className="relative bg-gray-900 py-20 sm:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          {/* 背景画像プレースホルダー */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-gray-900" />
-        </div>
-        
-        <div className="container-base relative z-10 text-center">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md">
-            バンコクの<span className="text-red-500">理想の住まい</span>を、<br className="sm:hidden"/>ここから。
-          </h1>
-          <p className="text-gray-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
-            日本人向けのコンドミニアム・アパートメント検索。<br />
-            エリア、沿線、こだわり条件から快適な物件を見つけましょう。
-          </p>
-          
-          <div className="max-w-3xl mx-auto grid grid-cols-2 gap-4">
-            <BigOptionCard 
-              href="/area" 
-              title="エリアから探す" 
-              subtitle="Province / District" 
-              icon={<Blocks className="h-6 w-6 text-red-500" />} 
-            />
-            <BigOptionCard 
-              href="/line" 
-              title="沿線・駅から探す" 
-              subtitle="BTS / MRT" 
-              icon={<Train className="h-6 w-6 text-blue-500" />} 
-            />
-          </div>
-        </div>
-      </section>
+      <section className="relative bg-gray-900 py-16 sm:py-32">
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-gray-900" />
+  </div>
+
+  <div className="container-base relative z-10 text-center px-4 sm:px-0">
+    <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
+      バンコクの<span className="text-red-500">理想の住まい</span>を、<br className="sm:hidden" />
+      ここから。
+    </h1>
+
+    <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10">
+      日本人向けのコンドミニアム・アパートメント検索。<br />
+      エリア、沿線、こだわり条件から快適な物件を見つけましょう。
+    </p>
+
+    <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <BigOptionCard
+        href="/area"
+        title="エリアから探す"
+        subtitle="Province / District"
+        icon={<Blocks className="h-6 w-6 text-red-500" />}
+      />
+      <BigOptionCard
+        href="/line"
+        title="沿線・駅から探す"
+        subtitle="BTS / MRT"
+        icon={<Train className="h-6 w-6 text-blue-500" />}
+      />
+    </div>
+  </div>
+</section>
 
       {/* コンテンツメニューバー */}
       <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
