@@ -121,7 +121,7 @@ export default function PropertyCard({
             </Link>
           </div>
 
-          <div className="grid grid-cols-5 gap-y-3 gap-x-2 my-4 bg-gray-50 rounded-xl p-3 border border-gray-100">
+          <div className="grid grid-cols-5 gap-y-3 my-4 bg-gray-50 rounded-xl p-3 border border-gray-100">
   {/* Bedroom */}
   <div className="flex flex-col items-center sm:items-start">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
