@@ -196,11 +196,12 @@ export default function Home() {
 </section>
 
       {/* コンテンツメニューバー */}
-      <section className="border-b bg-white shadow-sm sticky top-16 z-40 hidden sm:block">
-        <div className="container-base py-3">
-          <Contents />
-        </div>
-      </section>
+      <section className="border-b bg-white shadow-sm sticky top-16 z-40 block">
+  <div className="container-base py-0">
+    <Contents />
+  </div>
+</section>
+
 
       {/* === 人気のエリアセクション（刷新） === */}
       <section className="container-base py-16">
