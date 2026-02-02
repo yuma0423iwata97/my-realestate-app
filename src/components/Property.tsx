@@ -123,25 +123,28 @@ export default function PropertyCard({
 
           <div className="grid grid-cols-5 gap-y-3 gap-x-2 my-4 bg-gray-50 rounded-xl p-3 border border-gray-100">
   {/* Bedroom */}
-  <div className="flex flex-col">
+  <div className="flex flex-col items-center sm:items-start">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
-      <BedDouble size={10} /> ベッドルーム
+      <BedDouble size={12} className="shrink-0" />
+      <span className="hidden sm:inline">ベッドルーム</span>
     </span>
     <span className="text-sm font-bold text-gray-800">{p.Bedroom ?? "-"}</span>
   </div>
 
   {/* Bathroom */}
-  <div className="flex flex-col border-l border-gray-200 pl-3">
+  <div className="flex flex-col items-center sm:items-start border-l border-gray-200 pl-2 sm:pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
-      <Bath size={10} /> バスルーム
+      <Bath size={12} className="shrink-0" />
+      <span className="hidden sm:inline">バスルーム</span>
     </span>
     <span className="text-sm font-bold text-gray-800">{p.Bathroom ?? "-"}</span>
   </div>
 
   {/* Size */}
-  <div className="flex flex-col border-l border-gray-200 pl-3">
+  <div className="flex flex-col items-center sm:items-start border-l border-gray-200 pl-2 sm:pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
-      <Ruler size={10} /> 広さ
+      <Ruler size={12} className="shrink-0" />
+      <span className="hidden sm:inline">広さ</span>
     </span>
     <span className="text-sm font-bold text-gray-800">
       {p.Size ? `${p.Size} ㎡` : "-"}
@@ -149,9 +152,10 @@ export default function PropertyCard({
   </div>
 
   {/* Floor */}
-  <div className="flex flex-col border-l border-gray-200 pl-3">
+  <div className="flex flex-col items-center sm:items-start border-l border-gray-200 pl-2 sm:pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
-      <Building2 size={10} /> 階数
+      <Building2 size={12} className="shrink-0" />
+      <span className="hidden sm:inline">階数</span>
     </span>
     <span className="text-sm font-bold text-gray-800">
       {p.Floor ? `${p.Floor}階` : "-"}
@@ -159,9 +163,10 @@ export default function PropertyCard({
   </div>
 
   {/* Year */}
-  <div className="flex flex-col border-l border-gray-200 pl-3">
+  <div className="flex flex-col items-center sm:items-start border-l border-gray-200 pl-2 sm:pl-3">
     <span className="text-[10px] text-gray-500 flex items-center gap-1">
-      <Calendar size={10} /> 築年
+      <Calendar size={12} className="shrink-0" />
+      <span className="hidden sm:inline">築年</span>
     </span>
     <span className="text-sm font-bold text-gray-800">
       {p.Year ? `${p.Year}年` : "-"}
