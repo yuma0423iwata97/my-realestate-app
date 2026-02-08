@@ -329,7 +329,7 @@ export default function Home() {
         </div>
       </section>
 
-       おすすめ物件セクション */}
+       {*/ おすすめ物件セクション */}
       <section className="container-base py-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">新着・おすすめ物件</h2>
