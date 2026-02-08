@@ -116,7 +116,7 @@ async function FeaturedSection() {
       </div>
     );
   }
-
+}
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {properties.map((p, idx) => (
@@ -329,7 +329,7 @@ export default function Home() {
         </div>
       </section>
 
-       {*/ おすすめ物件セクション */}
+       おすすめ物件セクション */}
       <section className="container-base py-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">新着・おすすめ物件</h2>
