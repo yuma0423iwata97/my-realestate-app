@@ -26,7 +26,7 @@ const POPULAR_AREAS = [
     en: "Phrom Phong",
     catch: "日本人ファミリー人気No.1",
     desc: "スーパー・病院・公園が揃う、初めての海外生活でも安心の日本人街。",
-    image: "/area-phromphong.jpg", // 実際には適切な画像パスに置き換えてください
+    image: "/area-phromphong.jpg",
     tags: ["家族向け", "便利", "日本人多"],
     href: "/properties?station=Phrom%20Phong"
   },
@@ -80,10 +80,12 @@ const POPULAR_AREAS = [
     tags: ["高コスパ", "生活便利", "単身"],
     href: "/properties?station=On%20Nut"
   },
+  // エリア画像がない場合は public フォルダに画像を追加するか、placeholder を使用してください
 ];
 
-/** * データ取得ロジック
- * エラー時もサイト全体をクラッシュさせず、空配列とエラーログを返す
+/**
+ * データ取得ロジック
+ * 配列または { data: [...] } のどちらが返ってきても対応できるように修正
  */
 async function getFeatured(): Promise<Property[]> {
   if (!API) {
@@ -91,12 +93,19 @@ async function getFeatured(): Promise<Property[]> {
     return [];
   }
   try {
+    // 6件だけ取得
     const res = await fetch(`${API}?perPage=6`, { 
-      next: { revalidate: 3600 } // ← 1時間はキャッシュを使う（高速化＆ビルド成功）
+      next: { revalidate: 3600 } 
     });
+    
     if (!res.ok) throw new Error("Failed to fetch");
-    const { data } = await res.json();
-    return data || [];
+    
+    const json = await res.json();
+    
+    // ★修正ポイント: 配列が直接返ってくる場合と、{ data: [] } で返ってくる場合の両方に対応
+    const data = Array.isArray(json) ? json : (json.data || []);
+    
+    return data;
   } catch (error) {
     console.error("Fetch Error:", error);
     return [];
@@ -116,7 +125,6 @@ async function FeaturedSection() {
       </div>
     );
   }
-}
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {properties.map((p, idx) => (
@@ -163,47 +171,47 @@ export default function Home() {
     <div className="pb-20">
       {/* Hero Section: ファーストビュー */}
       <section className="relative bg-gray-900 py-16 sm:py-32">
-  <div className="absolute inset-0 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-gray-900" />
-  </div>
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-gray-900" />
+          {/* 背景画像を配置する場合はここに Image コンポーネントを追加 */}
+        </div>
 
-  <div className="container-base relative z-10 text-center px-4 sm:px-0">
-    <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
-      バンコクの<span className="text-red-500">理想の住まい</span>を、<br className="sm:hidden" />
-      ここから。
-    </h1>
+        <div className="container-base relative z-10 text-center px-4 sm:px-0">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
+            バンコクの<span className="text-red-500">理想の住まい</span>を、<br className="sm:hidden" />
+            ここから。
+          </h1>
 
-    <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10">
-      日本人向けのコンドミニアム・アパートメント検索。<br />
-      エリア、沿線、こだわり条件から快適な物件を見つけましょう。
-    </p>
+          <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10">
+            日本人向けのコンドミニアム・アパートメント検索。<br />
+            エリア、沿線、こだわり条件から快適な物件を見つけましょう。
+          </p>
 
-    <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-      <BigOptionCard
-        href="/area"
-        title="エリアから探す"
-        subtitle="Province / District"
-        icon={<Blocks className="h-6 w-6 text-red-500" />}
-      />
-      <BigOptionCard
-        href="/line"
-        title="沿線・駅から探す"
-        subtitle="BTS / MRT"
-        icon={<Train className="h-6 w-6 text-blue-500" />}
-      />
-    </div>
-  </div>
-</section>
+          <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <BigOptionCard
+              href="/area"
+              title="エリアから探す"
+              subtitle="Province / District"
+              icon={<Blocks className="h-6 w-6 text-red-500" />}
+            />
+            <BigOptionCard
+              href="/line"
+              title="沿線・駅から探す"
+              subtitle="BTS / MRT"
+              icon={<Train className="h-6 w-6 text-blue-500" />}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* コンテンツメニューバー */}
       <section className="border-b bg-white shadow-sm sticky top-16 z-40 block">
-  <div className="container-base py-0">
-    <Contents />
-  </div>
-</section>
+        <div className="container-base py-0">
+          <Contents />
+        </div>
+      </section>
 
-
-      {/* === 人気のエリアセクション（刷新） === */}
+      {/* === 人気のエリアセクション === */}
       <section className="container-base py-16">
         <div className="text-center mb-10">
           <span className="text-red-600 font-bold tracking-widest text-xs uppercase mb-2 block">
@@ -218,7 +226,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* グリッドレイアウト（PC:3列 / Mobile:1列） */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {POPULAR_AREAS.map((area) => (
             <Link 
@@ -226,7 +233,6 @@ export default function Home() {
               href={area.href}
               className="group flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
-              {/* 画像エリア */}
               <div className="relative h-48 w-full overflow-hidden bg-gray-200">
                 <Image 
                    src={area.image} 
@@ -234,17 +240,13 @@ export default function Home() {
                    fill 
                    className="object-cover group-hover:scale-110 transition-transform duration-700" 
                 />
-                {/* オーバーレイ */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80" />
-                
-                {/* エリア名（画像上） */}
                 <div className="absolute bottom-4 left-4 text-white">
                   <p className="text-xs font-bold opacity-80 uppercase tracking-wider mb-1">{area.en}</p>
                   <h3 className="text-2xl font-bold">{area.name}</h3>
                 </div>
               </div>
 
-              {/* コンテンツエリア */}
               <div className="p-5 flex-1 flex flex-col">
                 <div className="mb-3">
                    <h4 className="font-bold text-red-600 text-sm mb-2 flex items-center gap-1">
@@ -255,8 +257,6 @@ export default function Home() {
                       {area.desc}
                    </p>
                 </div>
-                
-                {/* タグ */}
                 <div className="mt-auto pt-4 flex flex-wrap gap-2">
                    {area.tags.map(tag => (
                       <span key={tag} className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">
@@ -271,7 +271,7 @@ export default function Home() {
         
         <div className="mt-8 text-center">
            <Link 
-             href="/areas" 
+             href="/area" 
              className="inline-flex items-center gap-2 text-sm font-bold text-red-600 border border-red-600 px-6 py-3 rounded-full hover:bg-red-50 transition-colors"
            >
              エリアガイドで詳しく見る <ChevronRight size={16} />
@@ -279,57 +279,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* こだわり検索 
-      <section className="bg-gray-50 py-16">
-        <div className="container-base">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold border-l-4 border-red-600 pl-4">こだわり条件から探す</h2>
-            <Link href="/features" className="hidden sm:flex items-center text-red-600 font-medium hover:underline">
-              すべて見る <ChevronRight size={18} />
-            </Link>
-          </div>
-
-          <div className="flex overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 gap-4 scrollbar-hide snap-x">
-            {[
-               { title: "～4000万円の一戸建て", href: "/features/price-under-40m" },
-               { title: "7日以内の新着・更新", href: "/features/new-within-7days" },
-               { title: "ルーフバルコニー", href: "/features/roof-balcony" },
-               { title: "LDK18帖以上", href: "/features/ldk-18plus" },
-            ].map((item, i) => (
-              <div key={i} className="min-w-[200px] snap-start">
-                <SmallCard
-                  href={item.href}
-                  imageSrc="/placeholder.jpg"
-                  title={item.title}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 flex items-center justify-between mb-8">
-             <h2 className="text-2xl font-bold border-l-4 border-blue-600 pl-4">家賃・価格から探す</h2>
-          </div>
-          
-           <div className="flex overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 gap-4 scrollbar-hide snap-x">
-            {[
-               { title: "～1万バーツ", href: "/search?price_max=10000" },
-               { title: "1～1.5万バーツ", href: "/search?price_min=10000&price_max=15000" },
-               { title: "1.5～2万バーツ", href: "/search?price_min=15000&price_max=20000" },
-               { title: "2万バーツ以上", href: "/search?price_min=20000" },
-            ].map((item, i) => (
-              <div key={i} className="min-w-[200px] snap-start">
-                <SmallCard
-                  href={item.href}
-                  imageSrc="/placeholder.jpg"
-                  title={item.title}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-       おすすめ物件セクション */}
+      {/* おすすめ物件セクション */}
       <section className="container-base py-16">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold">新着・おすすめ物件</h2>
