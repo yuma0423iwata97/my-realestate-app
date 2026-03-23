@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import Contents from "@/components/Contents";
 import BigOptionCard from "@/components/BigOptionCard";
-import { Blocks, Train, ChevronRight, MapPin, Star } from "lucide-react";
+import { Blocks, Train, ChevronRight, MapPin, Star,MessageCircle } from "lucide-react";
 
 // 環境変数の型安全確保
 const API = process.env.SHEET_API_URL || "";
