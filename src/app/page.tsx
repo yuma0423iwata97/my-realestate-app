@@ -199,7 +199,6 @@ export default function Home() {
     title="どのエリアが良いか分からない方へ！"
     subtitle="まずはLINEで無料相談"
     icon={<MessageCircle className="h-6 w-6 text-green-500" />}
-    className="sm:col-span-2"
   />
 
   <BigOptionCard
