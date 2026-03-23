@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import Contents from "@/components/Contents";
 import BigOptionCard from "@/components/BigOptionCard";
-import { Blocks, Train, ChevronRight, MapPin, Star,MessageCircle } from "lucide-react";
+import { Blocks, Train, ChevronRight, MapPin, Star,MessageCircle,SlidersHorizontal } from "lucide-react";
 
 // 環境変数の型安全確保
 const API = process.env.SHEET_API_URL || "";
@@ -180,9 +180,7 @@ export default function Home() {
   <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
     バンコクでの
     <br className="sm:hidden" />
-    <span className="text-red-500">初めての就職・移住</span>を、
-    <br className="sm:hidden" />
-    最高に快適に
+    <span className="text-red-500">就職・移住</span>を快適に
   </h1>
 
   <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -213,6 +211,13 @@ export default function Home() {
     title="沿線・駅から探す"
     subtitle="BTS / MRT"
     icon={<Train className="h-6 w-6 text-blue-500" />}
+  />
+
+  <BigOptionCard
+    href="/properties"
+    title="詳細条件から探す"
+    subtitle="Price / Size / Layout"
+    icon={<SlidersHorizontal className="h-6 w-6 text-purple-500" />}
   />
 </div>
         </div>
