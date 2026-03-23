@@ -177,15 +177,21 @@ export default function Home() {
         </div>
 
         <div className="container-base relative z-10 text-center px-4 sm:px-0">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
-            バンコクでの<span className="text-red-500">初めての就職・移住</span>を、<br className="sm:hidden" />
-            最高に快適に。
-          </h1>
+  <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
+    バンコクでの
+    <br className="sm:hidden" />
+    <span className="text-red-500">初めての就職・移住</span>を、
+    <br className="sm:hidden" />
+    最高に快適に。
+  </h1>
 
-          <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10">
-            日本人向けのコンドミニアム・アパートメント検索。<br />
-            物件探しから現地の生活インフラ立ち上げまでフルサポート。
-          </p>
+  <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+    日本人向けのコンドミニアム・アパートメント
+    <span className="whitespace-nowrap">検索。</span>
+    <br />
+    物件探しから現地の生活インフラ立ち上げまでフル
+    <span className="whitespace-nowrap">サポート。</span>
+  </p>
 
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <BigOptionCard
