@@ -190,7 +190,7 @@ export default function Home() {
     <br />
     物件探しから現地の生活インフラ立ち上げまで
     <br className="sm:hidden" />
-    フルサポート
+    私たちにお任せください
   </p>
 
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
