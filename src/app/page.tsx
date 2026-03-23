@@ -194,19 +194,28 @@ export default function Home() {
   </p>
 
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <BigOptionCard
-              href="/area"
-              title="エリアから探す"
-              subtitle="Province / District"
-              icon={<Blocks className="h-6 w-6 text-red-500" />}
-            />
-            <BigOptionCard
-              href="/line"
-              title="沿線・駅から探す"
-              subtitle="BTS / MRT"
-              icon={<Train className="h-6 w-6 text-blue-500" />}
-            />
-          </div>
+  <BigOptionCard
+    href="/line-contact"
+    title="どのエリアが良いか分からない方へ！"
+    subtitle="まずはLINEで無料相談"
+    icon={<MessageCircle className="h-6 w-6 text-green-500" />}
+    className="sm:col-span-2"
+  />
+
+  <BigOptionCard
+    href="/area"
+    title="エリアから探す"
+    subtitle="Province / District"
+    icon={<Blocks className="h-6 w-6 text-red-500" />}
+  />
+
+  <BigOptionCard
+    href="/line"
+    title="沿線・駅から探す"
+    subtitle="BTS / MRT"
+    icon={<Train className="h-6 w-6 text-blue-500" />}
+  />
+</div>
         </div>
       </section>
 
