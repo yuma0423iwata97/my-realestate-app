@@ -182,15 +182,15 @@ export default function Home() {
     <br className="sm:hidden" />
     <span className="text-red-500">初めての就職・移住</span>を、
     <br className="sm:hidden" />
-    最高に快適に。
+    最高に快適に
   </h1>
 
   <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-    日本人向けのコンドミニアム・アパートメント
-    <span className="whitespace-nowrap">検索。</span>
+    バンコクのコンドミニアム・アパートメント
     <br />
-    物件探しから現地の生活インフラ立ち上げまでフル
-    <span className="whitespace-nowrap">サポート。</span>
+    物件探しから現地の生活インフラ立ち上げまで
+    <br className="sm:hidden" />
+    フルサポート
   </p>
 
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
