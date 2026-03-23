@@ -178,13 +178,13 @@ export default function Home() {
 
         <div className="container-base relative z-10 text-center px-4 sm:px-0">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-md leading-tight">
-            バンコクの<span className="text-red-500">理想の住まい</span>を、<br className="sm:hidden" />
-            ここから。
+            バンコクでの<span className="text-red-500">初めての就職・移住</span>を、<br className="sm:hidden" />
+            最高に快適に。
           </h1>
 
           <p className="text-gray-300 text-base sm:text-xl max-w-2xl mx-auto mb-10">
             日本人向けのコンドミニアム・アパートメント検索。<br />
-            エリア、沿線、こだわり条件から快適な物件を見つけましょう。
+            物件探しから現地の生活インフラ立ち上げまでフルサポート。
           </p>
 
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
